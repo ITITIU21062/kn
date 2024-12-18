@@ -64,24 +64,24 @@ public class Gameplay  extends JPanel implements ActionListener
 	public void paint(Graphics g)
 	{    		
 		// play background
-		g.setColor(Color.black);
+		g.setColor(Color.black);        // Bản đồ trò chơi (nền đen)
 		g.fillRect(0, 0, 650, 600);
 		
 		// right side background
-		g.setColor(Color.DARK_GRAY);
+		g.setColor(Color.DARK_GRAY);   // Khu vực bên phải hiển thị điểm và kills
 		g.fillRect(660, 0, 140, 600);
 		
 		// draw solid bricks
-		br.drawSolids(this, g);
+		br.drawSolids(this, g);        // Vẽ các viên gạch không phá được
 		
 		// draw Breakable bricks	
-		br.draw(this, g);
+		br.draw(this, g);              // Vẽ các viên gạch có thể phá
 		
 		if(play)
 		{
 			// draw player 1
 			if(player1up)
-				player1=new ImageIcon("player1_tank_up.png");	
+				player1=new ImageIcon("player1_tank_up.png");	   // Nếu p1 bấm up thì vẽ ảnh "up"
 			else if(player1down)
 				player1=new ImageIcon("player1_tank_down.png");
 			else if(player1right)
@@ -103,9 +103,9 @@ public class Gameplay  extends JPanel implements ActionListener
 						
 			player2.paintIcon(this, g, player2X, player2Y);
 			
-			if(player1Bullet != null && player1Shoot)
+			if(player1Bullet != null && player1Shoot)           // Nếu không có viên đạn nào của p1 trên map và p1 có lệnh bắn thì:
 			{
-				if(bulletShootDir1.equals(""))
+				if(bulletShootDir1.equals(""))              // xét trạng thái p1, nếu p1 "up" thì đạn bắn "up"
 				{
 					if(player1up)
 					{					
