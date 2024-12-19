@@ -92,7 +92,7 @@ public class Gameplay  extends JPanel implements ActionListener
 			player1.paintIcon(this, g, player1X, player1Y);
 			
 			// draw player 2
-			if(player2up)
+			if(player2up)                                             // vẽ p2, i chang p1
 				player2=new ImageIcon("player2_tank_up.png");	
 			else if(player2down)
 				player2=new ImageIcon("player2_tank_down.png");
@@ -292,13 +292,13 @@ public class Gameplay  extends JPanel implements ActionListener
 				play = true;         // đặt trạng thái thành "đang chơi"
 				repaint();
 			}
-			if(e.getKeyCode()== KeyEvent.VK_U)  // nếu như nhận chữ U từ bàn phím
+			if(e.getKeyCode()== KeyEvent.VK_U)  // nếu như nhận chữ "U" từ bàn phím
 			{
 				if(!player1Shoot)      // nếu như p1 đang không bắn gì
 				{
 					if(player1up)   // nếu p1 đang "up"
 					{					
-						player1Bullet = new Player1Bullet(player1X + 20, player1Y);     //
+						player1Bullet = new Player1Bullet(player1X + 20, player1Y);     // vị trí đạn bắn ra so với playerX và playerY
 					}
 					else if(player1down)
 					{					
