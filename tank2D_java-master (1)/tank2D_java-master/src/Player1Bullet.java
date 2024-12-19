@@ -6,7 +6,7 @@ import java.awt.image.BufferedImage;
 import javax.swing.ImageIcon;
 
 
-public class Player1Bullet {
+public class Player1Bullet {                         // tọa độ viên đạn
 	private double x, y;
 	
 	public Player1Bullet(double x, double y)
@@ -15,10 +15,10 @@ public class Player1Bullet {
 		this.y = y;
 	}
 	
-	public void move(String face)
+	public void move(String face)               // đạn bay
 	{
-		if(face.equals("right"))
-			x += 5;
+		if(face.equals("right"))            // nếu xe đang quay phải
+			x += 5;                     // mỗi lần đạn bay 5 pixel
 		else if(face.equals("left"))
 			x -= 5;
 		else if(face.equals("up"))
@@ -29,8 +29,8 @@ public class Player1Bullet {
 	
 	public void draw(Graphics g)
 	{
-		g.setColor(Color.yellow);
-		g.fillOval((int) x, (int) y, 10, 10);
+		g.setColor(Color.yellow);                 // viên đạn màu vàng
+		g.fillOval((int) x, (int) y, 10, 10);     // hình tròn
 	}
 	
 	public int getX()
