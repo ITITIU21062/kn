@@ -316,14 +316,14 @@ public class Gameplay  extends JPanel implements ActionListener
 					player1Shoot = true;
 				}
 			}
-			if(e.getKeyCode()== KeyEvent.VK_W)
+			if(e.getKeyCode()== KeyEvent.VK_W)     // lệnh di chuyển của p1, nếu nhận W:
 			{
 				player1right = false;
 				player1left = false;
 				player1down = false; 
-				player1up = true;		
+				player1up = true;	       // "player1up" thành true, nhích lên
 				
-				if(!(player1Y < 10))
+				if(!(player1Y < 10))      // nếu như tọa độ vẫn còn trong màn hình thì vẫn di chuyển
 					player1Y-=10;
 
 			}
@@ -362,7 +362,7 @@ public class Gameplay  extends JPanel implements ActionListener
 	
 	private class Player2Listener implements KeyListener
 	{
-		public void keyTyped(KeyEvent e) {}
+		public void keyTyped(KeyEvent e) {}              // như trên, nhưng của p2 
 		public void keyReleased(KeyEvent e) {}		
 		public void keyPressed(KeyEvent e) {	
 			if(e.getKeyCode()== KeyEvent.VK_M)
