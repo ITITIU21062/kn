@@ -13,16 +13,16 @@ public class Gameplay  extends JPanel implements ActionListener
 	private brick br;
 	
 	private ImageIcon player1;	
-	private int player1X = 200;
+	private int player1X = 200;    //tọa độ của p1
 	private int player1Y = 550;	
-	private boolean player1right = false;
+	private boolean player1right = false;     // status của p1 (quay trái, quay phải, ...)
 	private boolean player1left = false;
 	private boolean player1down = false;
 	private boolean player1up = true;	
-	private int player1score = 0;
-	private int player1lives = 5;
-	private boolean player1Shoot = false;
-	private String bulletShootDir1 = "";
+	private int player1score = 0;          // điểm của p1
+	private int player1lives = 5;          // hp của p1
+	private boolean player1Shoot = false;  // có lệnh bắn hay ko
+	private String bulletShootDir1 = "";   
 	
 	private ImageIcon player2;	
 	private int player2X = 400;
@@ -131,36 +131,36 @@ public class Gameplay  extends JPanel implements ActionListener
 				}
 				
 				
-				if(new Rectangle(player1Bullet.getX(), player1Bullet.getY(), 10, 10)
+				if(new Rectangle(player1Bullet.getX(), player1Bullet.getY(), 10, 10)   // nếu đạn của p1 đấm trúng p2 thì:
 				.intersects(new Rectangle(player2X, player2Y, 50, 50)))
 				{
-					player1score += 10;
-					player2lives -= 1;
-					player1Bullet = null;
-					player1Shoot = false;
-					bulletShootDir1 = "";
+					player1score += 10;        // điểm p1 +10
+					player2lives -= 1;         // hp p2 -1
+					player1Bullet = null;      // đặt số đạn về null
+					player1Shoot = false;      // đặt lệnh bắn về false
+					bulletShootDir1 = ""; 
 				}
 				
 				if(br.checkCollision(player1Bullet.getX(), player1Bullet.getY())
-						|| br.checkSolidCollision(player1Bullet.getX(), player1Bullet.getY()))
+						|| br.checkSolidCollision(player1Bullet.getX(), player1Bullet.getY()))     // nếu như đạn đâm cục gạch ko bể đc
 				{
-					player1Bullet = null;
-					player1Shoot = false;
+					player1Bullet = null;      // đặt số đạn về null  
+					player1Shoot = false;      // đặt lệnh bắn về false
 					bulletShootDir1 = "";				
 				}
 	
-				if(player1Bullet.getY() < 1 
+				if(player1Bullet.getY() < 1                                 // nếu đạn ra ngoài màn hình:
 						|| player1Bullet.getY() > 580
 						|| player1Bullet.getX() < 1
 						|| player1Bullet.getX() > 630)
 				{
-					player1Bullet = null;
-					player1Shoot = false;
+					player1Bullet = null;      // đặt số đạn về null 
+					player1Shoot = false;      // đặt lệnh bắn về false
 					bulletShootDir1 = "";
 				}
 			}
 			
-			if(player2Bullet != null && player2Shoot)
+			if(player2Bullet != null && player2Shoot)    //lệnh bắn của p2. i chang p1
 			{
 				if(bulletShootDir2.equals(""))
 				{
@@ -220,26 +220,26 @@ public class Gameplay  extends JPanel implements ActionListener
 	
 		
 		// the scores 		
-		g.setColor(Color.white);
-		g.setFont(new Font("serif",Font.BOLD, 15));
+		g.setColor(Color.white);                                // bảng điểm 
+		g.setFont(new Font("serif",Font.BOLD, 15));             // dùng phông serif, định dạng in đậm, cỡ 15
 		g.drawString("Scores", 700,30);
 		g.drawString("Player 1:  "+player1score, 670,60);
 		g.drawString("Player 2:  "+player2score, 670,90);
 		
-		g.drawString("Lives", 700,150);
+		g.drawString("Lives", 700,150);                         // bảng hp
 		g.drawString("Player 1:  "+player1lives, 670,180);
 		g.drawString("Player 2:  "+player2lives, 670,210);
 		
-		if(player1lives == 0)
+		if(player1lives == 0)                                   // nếu như hp p1 =0
 		{
 			g.setColor(Color.white);
 			g.setFont(new Font("serif",Font.BOLD, 60));
-			g.drawString("Game Over", 200,300);
-			g.drawString("Player 2 Won", 180,380);
+			g.drawString("Game Over", 200,300);             // in game over
+			g.drawString("Player 2 Won", 180,380);          // in p2 thắng
 			play = false;
 			g.setColor(Color.white);
 			g.setFont(new Font("serif",Font.BOLD, 30));
-			g.drawString("(Space to Restart)", 230,430);
+			g.drawString("(Space to Restart)", 230,430);    // in dòng "bấm space để chơi lại"
 		}
 		else if(player2lives == 0)
 		{
@@ -253,7 +253,7 @@ public class Gameplay  extends JPanel implements ActionListener
 			play = false;
 		}
 		
-		g.dispose();
+		g.dispose();  // để làm gì thì không biết
 	}
 
 	@Override
@@ -268,37 +268,37 @@ public class Gameplay  extends JPanel implements ActionListener
 		public void keyTyped(KeyEvent e) {}
 		public void keyReleased(KeyEvent e) {}		
 		public void keyPressed(KeyEvent e) {	
-			if(e.getKeyCode()== KeyEvent.VK_SPACE && (player1lives == 0 || player2lives == 0))
+			if(e.getKeyCode()== KeyEvent.VK_SPACE && (player1lives == 0 || player2lives == 0))    // nếu bấm space khi hp của p1 hoặc p2 =0
 			{
-				br = new brick();
-				player1X = 200;
+				br = new brick();        //làm gạch mới
+				player1X = 200;      //đặt lại tọa độ p1
 				player1Y = 550;	
-				player1right = false;
+				player1right = false;   // đặt lại trạng thái p1
 				player1left = false;
 				player1down = false;
 				player1up = true;	
 				
-				player2X = 400;
+				player2X = 400;         //đặt lại tọa độ p2
 				player2Y = 550;	
-				player2right = false;
+				player2right = false;    // đặt lại trạng thái p2
 				player2left = false;
 				player2down = false;
 				player2up = true;	
 				
-				player1score = 0;
+				player1score = 0;    // điểm 2 đứa =0, mỗi thằng 5 máu
 				player1lives = 5;
 				player2score = 0;
 				player2lives = 5;
-				play = true;
+				play = true;         // đặt trạng thái thành "đang chơi"
 				repaint();
 			}
-			if(e.getKeyCode()== KeyEvent.VK_U)
+			if(e.getKeyCode()== KeyEvent.VK_U)  // nếu như nhận chữ U từ bàn phím
 			{
-				if(!player1Shoot)
+				if(!player1Shoot)      // nếu như p1 đang không bắn gì
 				{
-					if(player1up)
+					if(player1up)   // nếu p1 đang "up"
 					{					
-						player1Bullet = new Player1Bullet(player1X + 20, player1Y);
+						player1Bullet = new Player1Bullet(player1X + 20, player1Y);     //
 					}
 					else if(player1down)
 					{					
