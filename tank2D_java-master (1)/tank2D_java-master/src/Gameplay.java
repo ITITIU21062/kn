@@ -47,6 +47,12 @@ public class Gameplay  extends JPanel implements ActionListener
 	
 	private boolean play = true;
 	
+	private Item items;
+	private boolean[][] explosionMap = new boolean[650][600];
+	int countExpl1=0;
+	int countExpl2=0;
+	int deleteExpl=0;
+	
 	public Gameplay()
 	{				
 		br = new brick();
@@ -59,6 +65,18 @@ public class Gameplay  extends JPanel implements ActionListener
 		setFocusTraversalKeysEnabled(false);
         timer=new Timer(delay,this);
 		timer.start();
+		
+		
+		int[][] occupiedPositions = new int[br.bricksXPos.length + br.solidBricksXPos.length][2];
+	    for (int i = 0; i < br.bricksXPos.length; i++) {
+	        occupiedPositions[i][0] = br.bricksXPos[i];
+	        occupiedPositions[i][1] = br.bricksYPos[i];
+	    }
+	    for (int i = 0; i < br.solidBricksXPos.length; i++) {
+	        occupiedPositions[br.bricksXPos.length + i][0] = br.solidBricksXPos[i];
+	        occupiedPositions[br.bricksXPos.length + i][1] = br.solidBricksYPos[i];
+	    }
+	    items = new Item(650, 600, 50, occupiedPositions);
 	}
 	
 	public void paint(Graphics g)
@@ -76,6 +94,9 @@ public class Gameplay  extends JPanel implements ActionListener
 		
 		// draw Breakable bricks	
 		br.draw(this, g);              // Vẽ các viên gạch có thể phá
+		
+		items.draw(this, g);           // vẽ items
+		drawExplosion(g);
 		
 		if(play)
 		{
@@ -102,6 +123,34 @@ public class Gameplay  extends JPanel implements ActionListener
 				player2=new ImageIcon("player2_tank_left.png");
 						
 			player2.paintIcon(this, g, player2X, player2Y);
+			
+			
+			
+			if (items.checkCollision(player1X, player1Y)==0) {            // nhặt tnt
+				countExpl1+=1;
+	        }
+			
+			if (items.checkCollision(player2X, player2Y)==0) {            // nhặt tnt p2
+				countExpl2+=1;
+	        }
+			
+			/*if (items.checkCollision(player1X, player1Y)==0) {            // nhặt hp
+				player1lives+=2;
+				player1score+=1;
+	        }
+			
+			if (items.checkCollision(player2X, player2Y)==0) {            // nhặt hp p2
+				player2lives+=2;
+				player2score+=1;
+	        }*/
+			
+			if (deleteExpl>=3) {
+				deleteExplosion(g);
+				deleteExpl=0;
+				resetExplosionMap();
+				}
+			
+			
 			
 			if(player1Bullet != null && player1Shoot)           // Nếu không có viên đạn nào của p1 trên map và p1 có lệnh bắn thì:
 			{
@@ -134,16 +183,25 @@ public class Gameplay  extends JPanel implements ActionListener
 				if(new Rectangle(player1Bullet.getX(), player1Bullet.getY(), 10, 10)   // nếu đạn của p1 đấm trúng p2 thì:
 				.intersects(new Rectangle(player2X, player2Y, 50, 50)))
 				{
+					if (countExpl1 >=1) {
+						floodFill(player2X + 25, player2Y + 25, 70);
+						countExpl1-=1;
+						player2lives -= 1;
+					}
 					player1score += 10;        // điểm p1 +10
 					player2lives -= 1;         // hp p2 -1
 					player1Bullet = null;      // đặt số đạn về null
 					player1Shoot = false;      // đặt lệnh bắn về false
-					bulletShootDir1 = ""; 
+					bulletShootDir1 = "";
 				}
 				
 				if(br.checkCollision(player1Bullet.getX(), player1Bullet.getY())
 						|| br.checkSolidCollision(player1Bullet.getX(), player1Bullet.getY()))     // nếu như đạn đâm cục gạch ko bể đc
 				{
+					if (countExpl2 >=1) {
+						//floodFill(player2X + 25, player2Y + 25, 70);
+						countExpl2-=1;
+					}
 					player1Bullet = null;      // đặt số đạn về null  
 					player1Shoot = false;      // đặt lệnh bắn về false
 					bulletShootDir1 = "";				
@@ -191,6 +249,11 @@ public class Gameplay  extends JPanel implements ActionListener
 				if(new Rectangle(player2Bullet.getX(), player2Bullet.getY(), 10, 10)
 				.intersects(new Rectangle(player1X, player1Y, 50, 50)))
 				{
+					if (countExpl2 >=1) {
+						floodFill(player1X + 25, player1Y + 25, 70);
+						countExpl2-=1;
+						player1lives -= 1;
+					}
 					player2score += 10;
 					player1lives -= 1;
 					player2Bullet = null;
@@ -262,6 +325,54 @@ public class Gameplay  extends JPanel implements ActionListener
 	
 		repaint();
 	}
+	
+	
+	private void floodFill(int x, int y, int radius) {
+	    if (x < 0 || y < 0 || x >= explosionMap.length || y >= explosionMap[0].length) return;
+	    if (explosionMap[x][y] || radius <= 0) return;
+
+	    explosionMap[x][y] = true;
+	    
+	    if (br.checkCollision(x, y)) {
+	        br.breakBrick(x, y); // Phương thức này cần được định nghĩa trong lớp brick
+	    }
+
+	    floodFill(x + 1, y, radius - 1);
+	    floodFill(x - 1, y, radius - 1);
+	    floodFill(x, y + 1, radius - 1);
+	    floodFill(x, y - 1, radius - 1);
+	}
+
+	// Vẽ vụ nổ trên màn hình
+	private void drawExplosion(Graphics g) {
+	    g.setColor(Color.ORANGE);
+	    for (int i = 0; i < explosionMap.length; i++) {
+	        for (int j = 0; j < explosionMap[0].length; j++) {
+	            if (explosionMap[i][j]) {
+	                g.fillRect(i, j, 5, 5); // Vẽ ô vuông nhỏ cho hiệu ứng
+	            }
+	        }
+	    }
+	}
+	
+	private void deleteExplosion(Graphics g) {
+	    g.setColor(Color.BLACK);
+	    for (int i = 0; i < explosionMap.length; i++) {
+	        for (int j = 0; j < explosionMap[0].length; j++) {
+	            if (explosionMap[i][j]) {
+	                g.fillRect(i, j, 5, 5); // Xóa ô vuông nhỏ của vụ nổ
+	                explosionMap[i][j] = false; // Đặt lại trạng thái trong mảng
+	            }
+	        }
+	    }
+	}
+	
+	private void resetExplosionMap() {
+	    for (int i = 0; i < explosionMap.length; i++) {
+	        Arrays.fill(explosionMap[i], false);
+	    }
+	}
+	
 
 	private class Player1Listener implements KeyListener
 	{
@@ -294,6 +405,7 @@ public class Gameplay  extends JPanel implements ActionListener
 			}
 			if(e.getKeyCode()== KeyEvent.VK_U)  // nếu như nhận chữ "U" từ bàn phím
 			{
+				deleteExpl+=1;
 				if(!player1Shoot)      // nếu như p1 đang không bắn gì
 				{
 					if(player1up)   // nếu p1 đang "up"
@@ -318,6 +430,7 @@ public class Gameplay  extends JPanel implements ActionListener
 			}
 			if(e.getKeyCode()== KeyEvent.VK_W)     // lệnh di chuyển của p1, nếu nhận W:
 			{
+				deleteExpl+=1;
 				player1right = false;
 				player1left = false;
 				player1down = false; 
@@ -329,6 +442,7 @@ public class Gameplay  extends JPanel implements ActionListener
 			}
 			if(e.getKeyCode()== KeyEvent.VK_A)
 			{
+				deleteExpl+=1;
 				player1right = false;
 				player1left = true;
 				player1down = false;
@@ -339,6 +453,7 @@ public class Gameplay  extends JPanel implements ActionListener
 			}
 			if(e.getKeyCode()== KeyEvent.VK_S)
 			{
+				deleteExpl+=1;
 				player1right = false;
 				player1left = false;
 				player1down = true;
@@ -349,6 +464,7 @@ public class Gameplay  extends JPanel implements ActionListener
 			}
 			if(e.getKeyCode()== KeyEvent.VK_D)
 			{
+				deleteExpl+=1;
 				player1right = true;
 				player1left = false;
 				player1down = false;
@@ -367,6 +483,7 @@ public class Gameplay  extends JPanel implements ActionListener
 		public void keyPressed(KeyEvent e) {	
 			if(e.getKeyCode()== KeyEvent.VK_M)
 			{
+				deleteExpl+=1;
 				if(!player2Shoot)
 				{
 					if(player2up)
@@ -391,6 +508,7 @@ public class Gameplay  extends JPanel implements ActionListener
 			}
 			if(e.getKeyCode()== KeyEvent.VK_UP)
 			{
+				deleteExpl+=1;
 				player2right = false;
 				player2left = false;
 				player2down = false;
@@ -402,6 +520,7 @@ public class Gameplay  extends JPanel implements ActionListener
 			}
 			if(e.getKeyCode()== KeyEvent.VK_LEFT)
 			{
+				deleteExpl+=1;
 				player2right = false;
 				player2left = true;
 				player2down = false;
@@ -412,6 +531,7 @@ public class Gameplay  extends JPanel implements ActionListener
 			}
 			if(e.getKeyCode()== KeyEvent.VK_DOWN)
 			{
+				deleteExpl+=1;
 				player2right = false;
 				player2left = false;
 				player2down = true;
@@ -422,6 +542,7 @@ public class Gameplay  extends JPanel implements ActionListener
 			}
 			if(e.getKeyCode()== KeyEvent.VK_RIGHT)
 			{
+				deleteExpl+=1;
 				player2right = true;
 				player2left = false;
 				player2down = false;
