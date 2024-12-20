@@ -270,7 +270,7 @@ public class Gameplay  extends JPanel implements ActionListener
 		public void keyPressed(KeyEvent e) {	
 			if(e.getKeyCode()== KeyEvent.VK_SPACE && (player1lives == 0 || player2lives == 0))    // nếu bấm space khi hp của p1 hoặc p2 =0
 			{
-				br = new brick();        //làm gạch mới
+				brick br = new brick();        // gọi class gạch
 				player1X = 200;      //đặt lại tọa độ p1
 				player1Y = 550;	
 				player1right = false;   // đặt lại trạng thái p1
@@ -323,8 +323,8 @@ public class Gameplay  extends JPanel implements ActionListener
 				player1down = false; 
 				player1up = true;	       // "player1up" thành true, nhích lên
 				
-				if(!(player1Y < 10))      // nếu như tọa độ vẫn còn trong màn hình thì vẫn di chuyển
-					player1Y-=10;
+				if(!br.checkTankCollision(player1X, player1Y - 10) && player1Y > 0)               //nếu như còn trong màn hình và ko húc vào gạch thì vẫn chạy 
+					player1Y -= 10;
 
 			}
 			if(e.getKeyCode()== KeyEvent.VK_A)
@@ -334,8 +334,8 @@ public class Gameplay  extends JPanel implements ActionListener
 				player1down = false;
 				player1up = false;
 				
-				if(!(player1X < 10))
-					player1X-=10;
+				if(!br.checkTankCollision(player1X - 10, player1Y) && player1X > 0) 
+					player1X -= 10;
 			}
 			if(e.getKeyCode()== KeyEvent.VK_S)
 			{
@@ -344,8 +344,8 @@ public class Gameplay  extends JPanel implements ActionListener
 				player1down = true;
 				player1up = false;
 				
-				if(!(player1Y > 540))
-					player1Y+=10;
+				if(!br.checkTankCollision(player1X, player1Y + 10) && player1Y < 550) 
+					player1Y += 10;
 			}
 			if(e.getKeyCode()== KeyEvent.VK_D)
 			{
@@ -354,15 +354,15 @@ public class Gameplay  extends JPanel implements ActionListener
 				player1down = false;
 				player1up = false;
 				
-				if(!(player1X > 590))
-					player1X+=10;
+				if(!br.checkTankCollision(player1X + 10, player1Y) && player1X < 600)
+					player1X += 10;
 			}
 		}
 	}
 	
-	private class Player2Listener implements KeyListener
+	private class Player2Listener implements KeyListener               // như trên nhưng mà là p2
 	{
-		public void keyTyped(KeyEvent e) {}              // như trên, nhưng của p2 
+		public void keyTyped(KeyEvent e) {}
 		public void keyReleased(KeyEvent e) {}		
 		public void keyPressed(KeyEvent e) {	
 			if(e.getKeyCode()== KeyEvent.VK_M)
@@ -396,8 +396,8 @@ public class Gameplay  extends JPanel implements ActionListener
 				player2down = false;
 				player2up = true;		
 				
-				if(!(player2Y < 10))
-					player2Y-=10;
+				if(!br.checkTankCollision(player2X, player2Y - 10) && player2Y > 0) 
+					player2Y -= 10;
 
 			}
 			if(e.getKeyCode()== KeyEvent.VK_LEFT)
@@ -407,8 +407,8 @@ public class Gameplay  extends JPanel implements ActionListener
 				player2down = false;
 				player2up = false;
 				
-				if(!(player2X < 10))
-					player2X-=10;
+				if(!br.checkTankCollision(player2X - 10, player2Y) && player2X > 0) 
+					player2X -= 10;
 			}
 			if(e.getKeyCode()== KeyEvent.VK_DOWN)
 			{
@@ -417,8 +417,8 @@ public class Gameplay  extends JPanel implements ActionListener
 				player2down = true;
 				player2up = false;
 				
-				if(!(player2Y > 540))
-					player2Y+=10;
+				if(!br.checkTankCollision(player2X, player2Y + 10) && player2Y < 550) 
+					player2Y += 10;
 			}
 			if(e.getKeyCode()== KeyEvent.VK_RIGHT)
 			{
@@ -427,8 +427,8 @@ public class Gameplay  extends JPanel implements ActionListener
 				player2down = false;
 				player2up = false;
 				
-				if(!(player2X > 590))
-					player2X+=10;
+				if(!br.checkTankCollision(player2X + 10, player2Y) && player2X < 600) 
+					player2X += 10;
 			}
 			
 		}
