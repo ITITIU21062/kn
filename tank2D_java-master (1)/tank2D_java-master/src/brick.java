@@ -1,3 +1,4 @@
+
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Rectangle;
@@ -125,4 +126,16 @@ public class brick {
 		
 		return collided;
 	}
+	
+	public void breakBrick(int x, int y) {
+	    for (int i = 0; i < bricksXPos.length; i++) {
+	        if (bricksXPos[i] == x && bricksYPos[i] == y) {
+	            // Đánh dấu gạch bị phá vỡ (có thể loại bỏ khỏi danh sách)
+	            bricksXPos[i] = -1; // Xóa hoặc gắn giá trị không hợp lệ
+	            bricksYPos[i] = -1;
+	            break;
+	        }
+	    }
+	}
+
 }
