@@ -73,6 +73,43 @@ public class brick {
 		
 		return collided;
 	}
+
+	public boolean checkTankCollision(int x, int y)
+	{
+		boolean collided = false;
+		for(int i=0; i< brickON.length;i++)
+		{
+			if(brickON[i]==1)
+			{
+				
+				Rectangle brickRect = new Rectangle(bricksXPos[i], bricksYPos[i], 50, 50);
+				Rectangle tankRect = new Rectangle(x, y, 50, 50);
+				//Rectangle solidBrickRect = new Rectangle(solidBricksXPos[i], solidBricksYPos[i], 50, 50);
+				if(tankRect.intersects(brickRect))
+				{
+					collided = true;
+					break;
+				}
+				
+				/*if(tankRect.intersects(solidBrickRect))
+				{
+					collided = true;
+					break;
+				}*/
+			}
+		}
+		
+		for (int i = 0; i < solidBricksXPos.length; i++) {
+		    Rectangle solidBrickRect = new Rectangle(solidBricksXPos[i], solidBricksYPos[i], 50, 50);
+		    Rectangle tankRect = new Rectangle(x, y, 50, 50);
+		    if (tankRect.intersects(solidBrickRect)) {
+		        collided = true;
+		        break;
+		    }
+		}
+		
+		return collided;
+	}
 	
 	public boolean checkSolidCollision(int x, int y)
 	{
