@@ -22,7 +22,7 @@ public class Gameplay  extends JPanel implements ActionListener
 	private int player1score = 0;          // điểm của p1
 	private int player1lives = 5;          // hp của p1
 	private boolean player1Shoot = false;  // có lệnh bắn hay ko
-	private String bulletShootDir1 = "";   
+	private String bulletShootDir1 = "";   // bắn đâu
 	
 	private ImageIcon player2;	
 	private int player2X = 400;
@@ -36,10 +36,10 @@ public class Gameplay  extends JPanel implements ActionListener
 	private boolean player2Shoot = false;
 	private String bulletShootDir2 = "";
 	
-	private Timer timer;
-	private int delay=8;
+	private Timer timer;    // bộ đếm tg
+	private int delay=8;    // delay
 	
-	private Player1Listener player1Listener;
+	private Player1Listener player1Listener;    //lát xuống kia gán phím bấm
 	private Player2Listener player2Listener;
 	
 	private Player1Bullet player1Bullet = null;
@@ -49,13 +49,13 @@ public class Gameplay  extends JPanel implements ActionListener
 	
 	private Item items;
 	private boolean[][] explosionMap = new boolean[650][600];
-	int countExpl1=0;
-	int countExpl2=0;
-	int deleteExpl=0;
+	int countExpl1=0;    //đếm số đạn nổ của p1
+	int countExpl2=0;    // như trên nhưng là p2
+	int deleteExpl=0;    // bộ đếm để xóa vụ nổ
 	
 	public Gameplay()
 	{				
-		br = new brick();
+		br = new brick();                                // gọi class gạch
 		player1Listener = new Player1Listener();
 		player2Listener = new Player2Listener();
 		setFocusable(true);
@@ -63,7 +63,7 @@ public class Gameplay  extends JPanel implements ActionListener
 		addKeyListener(player1Listener);
 		addKeyListener(player2Listener);
 		setFocusTraversalKeysEnabled(false);
-        timer=new Timer(delay,this);
+        	timer=new Timer(delay,this);
 		timer.start();
 		
 		
@@ -144,7 +144,7 @@ public class Gameplay  extends JPanel implements ActionListener
 				player2score+=1;
 	        }*/
 			
-			if (deleteExpl>=3) {
+			if (deleteExpl>=3) {                 // làm 3 hành động thì xóa vụ nổ
 				deleteExplosion(g);
 				deleteExpl=0;
 				resetExplosionMap();
@@ -184,9 +184,9 @@ public class Gameplay  extends JPanel implements ActionListener
 				.intersects(new Rectangle(player2X, player2Y, 50, 50)))
 				{
 					if (countExpl1 >=1) {
-						floodFill(player2X + 25, player2Y + 25, 70);
-						countExpl1-=1;
-						player2lives -= 1;
+						floodFill(player2X + 25, player2Y + 25, 70);           // nếu có đạn tnt thì sẽ nỗ chỗ p2
+						countExpl1-=1;                                         // số đạn tnt -1
+						player2lives -= 1;                                     // p2 mất thêm 1 máu
 					}
 					player1score += 10;        // điểm p1 +10
 					player2lives -= 1;         // hp p2 -1
@@ -293,7 +293,7 @@ public class Gameplay  extends JPanel implements ActionListener
 		g.drawString("Player 1:  "+player1lives, 670,180);
 		g.drawString("Player 2:  "+player2lives, 670,210);
 		
-		if(player1lives == 0)                                   // nếu như hp p1 =0
+		if(player1lives <= 0)                                   // nếu như hp p1 <=0
 		{
 			g.setColor(Color.white);
 			g.setFont(new Font("serif",Font.BOLD, 60));
@@ -304,7 +304,7 @@ public class Gameplay  extends JPanel implements ActionListener
 			g.setFont(new Font("serif",Font.BOLD, 30));
 			g.drawString("(Space to Restart)", 230,430);    // in dòng "bấm space để chơi lại"
 		}
-		else if(player2lives == 0)
+		else if(player2lives <= 0)
 		{
 			g.setColor(Color.white);
 			g.setFont(new Font("serif",Font.BOLD, 60));
@@ -328,7 +328,7 @@ public class Gameplay  extends JPanel implements ActionListener
 	
 	
 	private void floodFill(int x, int y, int radius) {
-	    if (x < 0 || y < 0 || x >= explosionMap.length || y >= explosionMap[0].length) return;
+	    if (x < 0 || y < 0 || x >= explosionMap.length || y >= explosionMap[0].length) return;  // nếu nằm ngoài màn hình thì ko nổ nữa
 	    if (explosionMap[x][y] || radius <= 0) return;
 
 	    explosionMap[x][y] = true;
@@ -337,16 +337,16 @@ public class Gameplay  extends JPanel implements ActionListener
 	        br.breakBrick(x, y); // Phương thức này cần được định nghĩa trong lớp brick
 	    }
 
-	    floodFill(x + 1, y, radius - 1);
+	    floodFill(x + 1, y, radius - 1);       // vụ nổ lan về bên phải, nhỏ dần
 	    floodFill(x - 1, y, radius - 1);
-	    floodFill(x, y + 1, radius - 1);
+	    floodFill(x, y + 1, radius - 1);       // tóm lại này là dùng đệ quy để vẽ vụ nổ, lan dần về 4 hướng và nhỏ dần
 	    floodFill(x, y - 1, radius - 1);
 	}
 
 	// Vẽ vụ nổ trên màn hình
 	private void drawExplosion(Graphics g) {
-	    g.setColor(Color.ORANGE);
-	    for (int i = 0; i < explosionMap.length; i++) {
+	    g.setColor(Color.ORANGE);                                                // vụ nổ sẽ màu cam
+	    for (int i = 0; i < explosionMap.length; i++) {                          // duyệt qua mảng expM coi chỗ nào nổ thì tô
 	        for (int j = 0; j < explosionMap[0].length; j++) {
 	            if (explosionMap[i][j]) {
 	                g.fillRect(i, j, 5, 5); // Vẽ ô vuông nhỏ cho hiệu ứng
@@ -358,16 +358,16 @@ public class Gameplay  extends JPanel implements ActionListener
 	private void deleteExplosion(Graphics g) {
 	    g.setColor(Color.BLACK);
 	    for (int i = 0; i < explosionMap.length; i++) {
-	        for (int j = 0; j < explosionMap[0].length; j++) {
+	        for (int j = 0; j < explosionMap[0].length; j++) {                   // duyệt như trên nhưng mà coi chỗ nào nổ rồi thì:
 	            if (explosionMap[i][j]) {
-	                g.fillRect(i, j, 5, 5); // Xóa ô vuông nhỏ của vụ nổ
-	                explosionMap[i][j] = false; // Đặt lại trạng thái trong mảng
+	                g.fillRect(i, j, 5, 5);                                      // Xóa ô vuông nhỏ của vụ nổ
+	                explosionMap[i][j] = false;                                  // Đặt lại phần tử trong mảng về false hết
 	            }
 	        }
 	    }
 	}
 	
-	private void resetExplosionMap() {
+	private void resetExplosionMap() {                                           // để đặt các phần tử trong mảng về false hết như cái trên, thêm 1 cái cho chắc
 	    for (int i = 0; i < explosionMap.length; i++) {
 	        Arrays.fill(explosionMap[i], false);
 	    }
@@ -379,9 +379,9 @@ public class Gameplay  extends JPanel implements ActionListener
 		public void keyTyped(KeyEvent e) {}
 		public void keyReleased(KeyEvent e) {}		
 		public void keyPressed(KeyEvent e) {	
-			if(e.getKeyCode()== KeyEvent.VK_SPACE && (player1lives == 0 || player2lives == 0))    // nếu bấm space khi hp của p1 hoặc p2 =0
+			if(e.getKeyCode()== KeyEvent.VK_SPACE && (player1lives <= 0 || player2lives <= 0))    // nếu bấm space khi hp của p1 hoặc p2 =0
 			{
-				brick br = new brick();        // gọi class gạch
+				brick br = new brick();        // gọi class gạch để reset cả gạch nhưng khó quá bug mãi nên kệ.
 				player1X = 200;      //đặt lại tọa độ p1
 				player1Y = 550;	
 				player1right = false;   // đặt lại trạng thái p1
