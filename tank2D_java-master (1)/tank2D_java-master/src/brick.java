@@ -56,7 +56,7 @@ public class brick {
 		}
 	}
 	
-	public boolean checkCollision(int x, int y)
+	public boolean checkCollision(int x, int y)               // này là kiểm tra coi đạn có đâm gạch không
 	{
 		boolean collided = false;
 		for(int i=0; i< brickON.length;i++)                            // kiểm tra tất cả viên gạch
@@ -75,20 +75,20 @@ public class brick {
 		return collided;
 	}
 
-	public boolean checkTankCollision(int x, int y)
+	public boolean checkTankCollision(int x, int y)     // coi gạch với tank có húc nhau không
 	{
 		boolean collided = false;
-		for(int i=0; i< brickON.length;i++)
+		for(int i=0; i< brickON.length;i++)       // duyệt qua từng viên
 		{
-			if(brickON[i]==1)
+			if(brickON[i]==1)                  // nếu cục gạch chưa bể
 			{
 				
 				Rectangle brickRect = new Rectangle(bricksXPos[i], bricksYPos[i], 50, 50);
 				Rectangle tankRect = new Rectangle(x, y, 50, 50);
 				//Rectangle solidBrickRect = new Rectangle(solidBricksXPos[i], solidBricksYPos[i], 50, 50);
-				if(tankRect.intersects(brickRect))
+				if(tankRect.intersects(brickRect))     // và nếu 2 th var nhau
 				{
-					collided = true;
+					collided = true;    // trả về là có va chạm
 					break;
 				}
 				
@@ -101,7 +101,7 @@ public class brick {
 		}
 		
 		for (int i = 0; i < solidBricksXPos.length; i++) {
-		    Rectangle solidBrickRect = new Rectangle(solidBricksXPos[i], solidBricksYPos[i], 50, 50);
+		    Rectangle solidBrickRect = new Rectangle(solidBricksXPos[i], solidBricksYPos[i], 50, 50);  // cái này là cho gạch không thể bể
 		    Rectangle tankRect = new Rectangle(x, y, 50, 50);
 		    if (tankRect.intersects(solidBrickRect)) {
 		        collided = true;
@@ -112,7 +112,7 @@ public class brick {
 		return collided;
 	}
 	
-	public boolean checkSolidCollision(int x, int y)
+	public boolean checkSolidCollision(int x, int y)     // gạch không bể vs đạn
 	{
 		boolean collided = false;
 		for(int i=0; i< solidBricksXPos.length;i++)
@@ -127,7 +127,7 @@ public class brick {
 		return collided;
 	}
 	
-	public void breakBrick(int x, int y) {
+	public void breakBrick(int x, int y) {                                    // method phá gạch, xài chung với cái tnt
 	    for (int i = 0; i < bricksXPos.length; i++) {
 	        if (bricksXPos[i] == x && bricksYPos[i] == y) {
 	            // Đánh dấu gạch bị phá vỡ (có thể loại bỏ khỏi danh sách)
